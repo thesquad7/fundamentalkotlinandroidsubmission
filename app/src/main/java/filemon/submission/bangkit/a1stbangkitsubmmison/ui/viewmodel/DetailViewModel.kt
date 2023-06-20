@@ -12,7 +12,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DetailViewModel() : ViewModel() {
+class DetailViewModel(application: Application) : ViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
     private val _listUser = MutableLiveData<UserResponse>()
@@ -22,16 +22,19 @@ class DetailViewModel() : ViewModel() {
     val listUser : LiveData<UserResponse> = _listUser
     val error : LiveData<Boolean> = _error
 
-//    private val mUserRepository: UserRepository =
-//        UserRepository(application)
-//
-//    fun insert(user: User){
-//        mUserRepository.insert(user)
-//    }
-//
-//    fun delete(id: Int){
-//        mUserRepository.delete(id)
-//    }
+    private val mUserRepository: UserRepository =
+        UserRepository(application)
+
+    fun insert(user: User){
+        mUserRepository.insert(user)
+    }
+
+    fun delete(id: Int){
+        mUserRepository.delete(id)
+    }
+
+    fun getFavorite():LiveData<List<User>> =
+        mUserRepository.getAllFavorites()
 
 
     fun getDetailUser(username: String) {

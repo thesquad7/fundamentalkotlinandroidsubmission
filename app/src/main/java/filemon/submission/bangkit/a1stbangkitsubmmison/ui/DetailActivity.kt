@@ -23,6 +23,8 @@ class DetailActivity : AppCompatActivity() {
     private var _binding: ActivityDetailBinding? = null
     private val binding get() = _binding
     private lateinit var viewModel: DetailViewModel
+
+    private var ivFavorite: Boolean = false
     private var favoriteUser: User? = null
     private var detailUser = UserResponse()
 
@@ -31,6 +33,7 @@ class DetailActivity : AppCompatActivity() {
         getSupportActionBar()?.setTitle("Detail Git User")
         _binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding?.root)
+
         viewModel = obtainViewModel(this@DetailActivity)
         val user = intent.getStringExtra(MainActivity.EXTRA_DATA)
         println("Print (${MainActivity.EXTRA_DATA}")
@@ -58,9 +61,29 @@ class DetailActivity : AppCompatActivity() {
                 tvDetailFollowing.text = detailList.following.toString()
                 tvDetailRepository.text = detailList.publicRepos.toString()
             }
-
-
-
+            favoriteUser = User(detailList.id, detailList.login, detailList.avatarUrl)
+            viewModel.getFavorite().observe(this) { userFavorite ->
+                if (userFavorite != null) {
+                    for (data in userFavorite) {
+                        if (detailList.id == data.id) {
+                            ivFavorite = true
+                            binding?.ivFavorite?.setImageResource(R.drawable.tag)
+                        }
+                    }
+                }
+            }
+            binding?.ivFavorite?.setOnClickListener{
+                if(!ivFavorite){
+                    ivFavorite = true
+                    binding!!.ivFavorite.setImageResource(R.drawable.untag)
+                    insertToDatabase(detailUser)
+                } else {
+                    ivFavorite = false
+                    binding!!.ivFavorite.setImageResource(R.drawable.untag)
+                    viewModel.delete(detailUser.id)
+                    Toast.makeText(this, "Tanda dihapus", Toast.LENGTH_SHORT).show()
+                }
+            }
 
             val sectionPagerAdapter = SectionPagerAdapter(this)
             val viewPager: ViewPager2 = findViewById(R.id.view_pager)
@@ -76,20 +99,19 @@ class DetailActivity : AppCompatActivity() {
         }
 
         viewModel.error.observe(this) {
-            Toast.makeText(this, "Data Not Found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Data tidak ditemukan", Toast.LENGTH_SHORT).show()
             viewModel.doneToastError()
         }
     }
-
-//    private fun insertToDatabase(detailList: UserResponse) {
-//        favoriteUser.let { favoriteUser ->
-//            favoriteUser?.id = detailList.id
-//            favoriteUser?.login = detailList.login
-//            favoriteUser?.imageUrl = detailList.avatarUrl
-//            viewModel.insert(favoriteUser as User)
-//            Toast.makeText(this, "Favorited", Toast.LENGTH_SHORT).show()
-//        }
-//    }
+    private fun insertToDatabase(detailList: UserResponse) {
+        favoriteUser.let { favoriteUser ->
+            favoriteUser?.id = detailList.id
+            favoriteUser?.login = detailList.login
+            favoriteUser?.imageUrl = detailList.avatarUrl
+            viewModel.insert(favoriteUser as User)
+            Toast.makeText(this, "Tertanda", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun obtainViewModel(activity: AppCompatActivity): DetailViewModel {
         val factory = DetailViewModelFactory.getInstance(activity.application)

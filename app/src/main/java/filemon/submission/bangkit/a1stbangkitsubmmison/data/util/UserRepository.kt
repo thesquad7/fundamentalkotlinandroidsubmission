@@ -11,11 +11,11 @@ import java.util.concurrent.Executors
 class UserRepository(application: Application) {
     private val mUserDao: UserDAO
     private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
-
     init {
         val db = UserRoomDatabase.getDatabase(application)
         mUserDao = db.userDao()
     }
+    fun getAllFavorites(): LiveData<List<User>> = mUserDao.getAllUser()
     fun insert(user: User) {
         executorService.execute { mUserDao.insertFavorite(user) }
     }

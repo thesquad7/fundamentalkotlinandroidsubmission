@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:text="Filemon Sitanggang - 1st Fundamental"
+        android:text="@string/filemon_sitanggang_1st_fundamental"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

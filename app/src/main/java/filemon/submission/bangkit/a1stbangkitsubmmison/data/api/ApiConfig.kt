@@ -1,5 +1,7 @@
 package filemon.submission.bangkit.a1stbangkitsubmmison.data.api
 
+import filemon.submission.bangkit.a1stbangkitsubmmison.data.util.UserRepository
+import filemon.submission.bangkit.a1stbangkitsubmmison.data.util.config
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -11,7 +13,7 @@ class ApiConfig {
             val authInterceptor = Interceptor { chain ->
                 val req = chain.request()
                 val requestHeaders = req.newBuilder()
-                    .addHeader("Authorization", "token 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")
+                    .addHeader("Authorization", "token " + "${config().token}")
                     .build()
                 chain.proceed(requestHeaders)
             }

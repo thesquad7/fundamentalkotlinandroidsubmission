@@ -101,6 +101,21 @@ class MainActivity : AppCompatActivity() {
         })
         return true
     }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.themeSetting -> {
+                Intent(this@MainActivity, ChangeThemeActivity::class.java).apply {
+                    startActivity(this)
+                }
+            }
+            R.id.favorite -> {
+                val intent = Intent(this, FavoriteActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 
     private fun showLoading(isLoading: Boolean) {
